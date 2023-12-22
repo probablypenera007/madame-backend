@@ -1,11 +1,8 @@
-# WTWR (What to Wear?): Back End
+# Madame Oracle: Back End
 Welcome to the back-end of the WTWR application, a robust server designed to support our innovative "What to Wear?" service. This project gives you an inside look at advanced server setup, database management, security implementation and applicaiton deployment.
 
-# DOMAIN Link:
-Access live application here: [WTWR Application](https://www.isitrainingoutside.jumpingcrab.com)
-
 ## Functionality
-1. **API Endpoints:** Various CRUD (Create, Read. Update, Delete) operations for interacting with clothing items and user data.
+1. **API Endpoints:** Various CRUD (Create, Read. Update, Delete) operations for interacting with user data.
 
 2. **Data Management:** Efficient data storage and retrieval with MongoDB
 
