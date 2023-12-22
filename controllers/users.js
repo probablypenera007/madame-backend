@@ -9,7 +9,7 @@ const NotFoundError = require("../errors/not-found-err");
 const UnauthorizedError = require("../errors/unauthorized-err");
 
 const createUser = (req, res, next) => {
-  const { name, avatar, email, password } = req.body;
+  const { name, dob, email, password } = req.body;
 
   if (!email || !password) {
     return next(new BadRequestError("Email and Password are REQUIRED!"));
@@ -22,11 +22,11 @@ const createUser = (req, res, next) => {
       }
       return bcrypt.hash(password, 10);
     })
-    .then((hash) => Users.create({ name, avatar, email, password: hash }))
+    .then((hash) => Users.create({ name, dob, email, password: hash }))
     .then((newUser) =>
       res.send({
         name: newUser.name,
-        avatar: newUser.avatar,
+        dob: newUser.dob,
         email: newUser.email,
       }),
     )
@@ -49,11 +49,11 @@ const getCurrentUsers = (req, res, next) => {
 };
 
 const updateUser = (req, res, next) => {
-  const { name, avatar } = req.body;
+  const { name, dob } = req.body;
 
   Users.findByIdAndUpdate(
     req.user._id,
-    { name, avatar },
+    { name, dob },
     { new: true, runValidators: true },
   )
     .then((user) => {

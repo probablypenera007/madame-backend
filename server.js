@@ -3,6 +3,7 @@ const express = require("express");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const routes = require("./routes");
 const { errors } = require("celebrate");
 const { validateUserBody, validateLogIn } = require("./middlewares/validation");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
@@ -16,7 +17,7 @@ app.use(helmet());
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017";
 mongoose.connect(MONGODB_URI)
   .then(() => {
-    console.log("DB is connected");
+    console.log(`DB is connected to "${MONGODB_URI}"`);
   },
   (e) => console.log("DB ERROR", e),
   );
@@ -29,8 +30,6 @@ app.use(requestLogger);
 app.post("/signin", validateLogIn,login);
 
 app.post("/signup", validateUserBody,createUser);
-
-const routes = require("./routes");
 
 app.use(routes);
 

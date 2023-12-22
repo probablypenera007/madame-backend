@@ -9,13 +9,9 @@ const userSchema = new mongoose.Schema({
     maxlength: 30,
     required: true,
   },
-  avatar: {
-    type: String,
-    required: false,
-    validate: {
-      validator: (v) => validator.isURL(v),
-      message: "Link user input is invalid",
-    },
+  dob: {
+    type: Date,
+    required: [true, "Date of Birth is required"],
   },
   email: {
     type: String,
