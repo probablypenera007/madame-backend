@@ -1,6 +1,7 @@
-import OpenAI from "openai";
+require("dotenv").config();
+const OpenAI = require("openai");
 
-const openai = new OpenAI();
+const openai = new OpenAI({OPENAI_API_KEY:'test is working now, insert AI KEY HERE TO TESTANOTHER ONE'});
 
 async function main() {
   const completion = await openai.chat.completions.create({
