@@ -49,7 +49,7 @@ fortuneTeller: (req, res, next) => {
 
   User.findById(userId)
   .then(user => {
-      const zodiacSign = getZodiacSign(user.dateOfBirth);
+      const zodiacSign = getZodiacSign(user.dob);
       const prompt = `Welcome! ${user.name}, child of the ${zodiacSign}. ${userInput}`;
 
       return fetch('https://api.openai.com/v1/chat/completions', {
@@ -82,12 +82,12 @@ fortuneTeller: (req, res, next) => {
       console.log('OpenAI API response:', data.choices[0].message.content);
     } else {
       console.error('Invalid response format:', data);
-      res.status(500).json({ error: 'Invalid response format from OpenAI API' });
+      // res.status(500).json({ error: 'Invalid response format from OpenAI API' });
     }
   })
   .catch(error => {
     console.error('Error in Madame Oracle Model:', error);
-    res.status(500).json({ error: 'Error fetching response from OpenAI API: ' + error });
+    // res.status(500).json({ error: 'Error fetching response from OpenAI API: ' + error });
     next(error);
   });
 
