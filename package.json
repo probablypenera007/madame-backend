@@ -25,6 +25,7 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^6.6.1",
+    "openai": "^4.24.1",
     "validator": "^13.11.0",
     "winston": "^3.11.0"
   },
