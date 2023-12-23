@@ -90,10 +90,7 @@ fortuneTeller: (req, res, next) => {
     // res.status(500).json({ error: 'Error fetching response from OpenAI API: ' + error });
     next(error);
   });
-
-
-
-}
+},
 
 // AI-TTS voice will be Shimmer or Alloy
 
@@ -121,6 +118,23 @@ fortuneTeller: (req, res, next) => {
 
 // response.stream_to_file("output.mp3")
 
+textToSpeech: (req,res,next) => {
+    const text = req.body.text;
+
+    fetch('https://api.openai.com/v1/audio/speech', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            model:"tts-1",
+            input: text,
+            voice: "alloy"
+          //voice: "shimmer"
+        })
+    })
+  }
 };
 
 module.exports = aiController;
