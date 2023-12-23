@@ -134,6 +134,15 @@ textToSpeech: (req,res,next) => {
           //voice: "shimmer"
         })
     })
+    .then(response => response.arrayBuffer())
+    .then(buffer => {
+        res.set('Content-Type', 'audio/mpeg');
+        res.send(Buffer.from(buffer));
+    })
+    .catch(error => {
+        console.error('Error in text-to-speech:', error);
+        next(error); 
+    });
   }
 };
 
