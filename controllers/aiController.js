@@ -2,6 +2,8 @@ const User = require('../models/user');
 const { OPENAI_API_KEY } = require('../config');
 
 
+
+
 // put Zodiac sign calculation per user's dateo of birth here
 
 // AI SST
