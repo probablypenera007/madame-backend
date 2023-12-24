@@ -3,7 +3,6 @@ const fs = require('fs');
 const FormData = require('form-data');
 const { OPENAI_API_KEY } = require('../utils/config');
 const BadRequestError = require('../errors/bad-request-err');
-const { error } = require('winston');
 
 
 
@@ -44,35 +43,31 @@ function getZodiacSign(dateOfBirth) {
 
 
 const aiController = {
-
 // AI SST
 speechToText: (req, res, next) => {
   console.log("this is req.files for STT",req.files)
   if (!req.files || Object.keys(req.files).length === 0) {
-
     return next(new BadRequestError('No files were uploaded.'));
   }
-
-const audioFile = req.files.file;
-if (!audioFile.data) {
-  return next(new BadRequestError('File data is undefined'));
-}
 console.log('req.files value:', req.files);
 console.log('req.files.file value:', req.files.file);
-console.log('audioFile value:', audioFile);
 
+  const audioFile = req.files.file;
+  const filePath = audioFile.tempFilePath;
 
-const formData = new FormData();
-console.log('formData:', formData);
-formData.append('file', fs.createReadStream(audioFile.tempFilePath));
-formData.append('model', 'whisper-1');
-
-fetch('https://api.openai.com/v1/audio/transcriptions', {
+    const formData = new FormData();
+    formData.append('model', 'whisper-1');
+    formData.append('file', fs.createReadStream(filePath), { filename: audioFile.name });
+console.log('formData value:', formData);
+const headers = {
+  'Authorization': `Bearer ${OPENAI_API_KEY}`,
+  ...formData.getHeaders(),
+};
+import('node-fetch').then(fetchModule => {
+  const fetch = fetchModule.default;
+ return fetch('https://api.openai.com/v1/audio/transcriptions', {
   method: 'POST',
-  headers: {
-    'Authorization': `Bearer ${OPENAI_API_KEY}`,
-    ...formData.getHeaders()
-  },
+  headers,
   body: formData
 })
 .then(response => response.json())
@@ -90,67 +85,10 @@ fetch('https://api.openai.com/v1/audio/transcriptions', {
   console.error('Error in AI controller speech-to-text:', error);
   next(error);
 });
+console.log('Request Headers:', headers);
+console.log('FormData:', formData);
+});
 },
-// curl --request POST \
-//   --url https://api.openai.com/v1/audio/transcriptions \
-//   --header 'Authorization: Bearer TOKEN' \
-//   --header 'Content-Type: multipart/form-data' \
-//   --form file=@/path/to/file/openai.mp3 \
-//   --form model=whisper-1
-
-// AI SST - TRANSLATION
-//curl --request POST
-// --url https://api.openai.com/v1/audio/translations
-// --header 'Authorization: Bearer TOKEN'
-// --header 'Content-Type: multipart/form-data'
-// --form file=@/path/to/file/german.mp3
-// --form model=whisper-1
-
-//Using the prompt parameter - for reliability
-//The first method involves using the optional prompt parameter to pass a dictionary of the correct spellings.
-//Since it wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model.
-//It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt.
-
-//transcribe(filepath, prompt="ZyntriQix, Digique Plus, CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven,
-//DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T.")
-// While it will increase reliability, this technique is limited to only 244 characters so your list of SKUs
-// would need to be relatively small in order for this to be a scalable solution.
-
-//Post-processing with GPT-4
-//The second method involves a post-processing step using GPT-4 or GPT-3.5-Turbo.
-//We start by providing instructions for GPT-4 through the system_prompt variable.
-//Similar to what we did with the prompt parameter earlier, we can define our company and product names.
-
-//system_prompt = "You are a helpful assistant for the company ZyntriQix.
-//Your task is to correct any spelling discrepancies in the transcribed text.
-//Make sure that the names of the following products are spelled correctly:
-//ZyntriQix, Digique Plus, CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven, DigiFractal Matrix, PULSE, RAPT,
-//B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T. Only add necessary punctuation such as periods, commas,
-//and capitalization, and use only the context provided."
-
-//def generate_corrected_transcript(temperature, system_prompt, audio_file):
-//    response = client.chat.completions.create(
-//        model="gpt-4",
-//        temperature=temperature,
-//        messages=[
-//            {
-//                "role": "system",
-//                "content": system_prompt
-//            },
-//            {
-//                "role": "user",
-//                "content": transcribe(audio_file, "")
-//            }
-//        ]
-//    )
-//    return response['choices'][0]['message']['content']
-//
-//corrected_text = generate_corrected_transcript(0, system_prompt, fake_company_filepath)
-//If you try this on your own audio file, you can see that GPT-4 manages to correct many misspellings in the transcript.
-//Due to its larger context window, this method might be more scalable than using Whisper's prompt parameter
-//and is more reliable since GPT-4 can be instructed and guided in ways that aren't possible with Whisper given the lack of instruction following.
-
-
 
 // AI MODEL - Train AI to be a fortune teller here
 fortuneTeller: (req, res, next) => {
@@ -191,42 +129,14 @@ fortuneTeller: (req, res, next) => {
       console.log('OpenAI API response:', data.choices[0].message.content);
     } else {
       console.error('Invalid response format:', data);
-      // res.status(500).json({ error: 'Invalid response format from OpenAI API' });
     }
   })
   .catch(error => {
     console.error('Error in Madame Oracle Model:', error);
-    // res.status(500).json({ error: 'Error fetching response from OpenAI API: ' + error });
     next(error);
   });
 },
-
 // AI-TTS voice will be Shimmer or Alloy
-
-// OPEN AI DOCUMENTATION SYNTAX:
-// curl https://api.openai.com/v1/audio/speech \
-//   -H "Authorization: Bearer $OPENAI_API_KEY" \
-//   -H "Content-Type: application/json" \
-//   -d '{
-//     "model": "tts-1",
-//     "input": "Today is a wonderful day to build something people love!",
-//     "voice": "alloy"
-//   }' \
-//   --output speech.mp3
-
-//Streaming Real Time Audio
-// from openai import OpenAI
-
-// client = OpenAI()
-
-// response = client.audio.speech.create(
-//     model="tts-1",
-//     voice="alloy",
-//     input="Hello world! This is a streaming test.",
-// )
-
-// response.stream_to_file("output.mp3")
-
 textToSpeech: (req,res,next) => {
     const text = req.body.text;
 
