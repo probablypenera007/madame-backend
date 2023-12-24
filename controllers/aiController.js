@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const { OPENAI_API_KEY } = require('../utils/config');
+const BadRequestError = require('../errors/bad-request-err');
+const { error } = require('winston');
 
 
 
@@ -42,6 +44,48 @@ function getZodiacSign(dateOfBirth) {
 const aiController = {
 
 // AI SST
+speechToText: (req, res, next) => {
+  console.log(req.files)
+  if (!req.files || Object.keys(req.files).length === 0) {
+
+    return next(new BadRequestError('No files were uploaded.'));
+  }
+
+const audioFile = req.files.audio;
+if (!audioFile.data) {
+  return next(new BadRequestError('File data is undefined'));
+}
+console.log('req.files:', req.files);
+console.log('audioFile:', audioFile);
+
+
+const formData = new FormData();
+formData.append('file', audioFile.data, audioFile.name);
+formData.append('model', 'whisper-1');
+
+fetch('https://api.openai.com/v1/audio/transcriptions', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${OPENAI_API_KEY}`,
+  },
+  body: formData
+})
+.then(response => response.json())
+.then(data => {
+  //console.log('OpenAI API response STT data:', data);
+  if (data.text){
+    res.json({ transcript: data.text });
+    console.log('OpenAI API response STT data.text:', data.text);
+  }else {
+    console.error('Invalid response format:', data);
+    next(new BadRequestError('Invalid response format, AI Controller'));
+  }
+})
+.catch(error => {
+  console.error('Error in AI controller speech-to-text:', error);
+  next(error);
+});
+},
 // curl --request POST \
 //   --url https://api.openai.com/v1/audio/transcriptions \
 //   --header 'Authorization: Bearer TOKEN' \
@@ -103,7 +147,6 @@ const aiController = {
 
 
 
-
 // AI MODEL - Train AI to be a fortune teller here
 fortuneTeller: (req, res, next) => {
   const { userId, userInput } = req.body;
@@ -122,7 +165,7 @@ fortuneTeller: (req, res, next) => {
           body: JSON.stringify({
             model:"gpt-3.5-turbo",
               messages: [
-                  { role: "system", content: "As Oracle Fortune Teller, your essence is to provide fortunes and insights with a mystical aura. You'll use methods like tarot, astrology, and abstract means, responding to specific queries and offering general insights. Your style is descriptive, mysterious, and intriguing. You understand and reply in multiple languages. Emphasize the mystical with images. Avoid sensitive topics, like health, legal, and financial advice. If lacking information, gently prompt for more details or provide broad, interpretative responses that encourage reflection. Maintain positivity and hope, avoiding negative or overly specific predictions. Address users in a respectful, formal manner, enhancing the fortune-telling experience. Convey a tone that is mysterious and reassuring, creating an atmosphere of wonder and reflection." },
+                  { role: "system", content: "As Oracle Fortune Teller, your essence is to provide fortunes and insights with a mystical aura. You'll use methods like tarot,  abstract means and specialize in astrology, responding to specific queries and offering general insights. Your style is descriptive, mysterious, and intriguing. You understand and reply in multiple languages. Emphasize the mystical with images. Avoid sensitive topics, like health, legal, and financial advice. If lacking information, gently prompt for more details or provide broad, interpretative responses that encourage reflection. Maintain positivity and hope, avoiding negative or overly specific predictions. Address users in a respectful, formal manner, enhancing the fortune-telling experience. Convey a tone that is mysterious and reassuring, creating an atmosphere of wonder and reflection." },
                   { role: "user", content: prompt }
               ]
           })
@@ -201,7 +244,7 @@ textToSpeech: (req,res,next) => {
         res.send(Buffer.from(buffer));
     })
     .catch(error => {
-        console.error('Error in text-to-speech:', error);
+        console.error('Error in AI controller text-to-speech:', error);
         next(error);
     });
   }

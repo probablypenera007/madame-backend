@@ -3,6 +3,7 @@ const express = require("express");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const fileUpload = require('express-fileupload');
 const routes = require("./routes");
 const { errors } = require("celebrate");
 const { validateUserBody, validateLogIn } = require("./middlewares/validation");
@@ -13,6 +14,12 @@ const errorHandler = require("./middlewares/error-handler");
 const { PORT = 3001 } = process.env;
 const app = express();
 app.use(helmet());
+
+app.use(fileUpload({
+  createParentPath: true,
+  useTempFiles: true,
+  tempFileDir: '/tmp/'
+}));
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017";
 mongoose.connect(MONGODB_URI)
