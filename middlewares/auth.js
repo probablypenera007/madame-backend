@@ -15,8 +15,7 @@ const auth = (req, res, next) => {
 
   try {
     payload = jwt.verify(token, JWT_SECRET);
-  }
-  catch (e) {
+  } catch (e) {
     return next(new UnauthorizedError("Unauthorized Token in auth.js"));
   }
   req.user = payload;

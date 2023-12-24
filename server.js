@@ -42,7 +42,7 @@ app.post("/signup", validateUserBody, createUser);
 
 app.use(routes);
 
-app.use(errorLogger); // enabling the error logger
+app.use(errorLogger);
 
 app.use(errors());
 

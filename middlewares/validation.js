@@ -1,11 +1,11 @@
 const { Joi, celebrate } = require("celebrate");
 const validator = require("validator");
 
-const validateURL = (value,helpers) => {
-  if(validator.isURL(value)) {
+const validateURL = (value, helpers) => {
+  if (validator.isURL(value)) {
     return value;
   }
-  return helpers.error("string.uri")
+  return helpers.error("string.uri");
 };
 
 module.exports.validateUserBody = celebrate({
@@ -20,11 +20,11 @@ module.exports.validateUserBody = celebrate({
       "date.base": 'The "dob" field must be a valid date',
     }),
     email: Joi.string().required().email().messages({
-      'string.empty': 'The "email" field must be filled in',
-      'string.email': 'the "email" field must be a valid email address',
+      "string.empty": 'The "email" field must be filled in',
+      "string.email": 'the "email" field must be a valid email address',
     }),
     password: Joi.string().required().messages({
-      'string.empty': 'The "password" field must be filled in',
+      "string.empty": 'The "password" field must be filled in',
     }),
   }),
 });
@@ -32,11 +32,11 @@ module.exports.validateUserBody = celebrate({
 module.exports.validateLogIn = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email().messages({
-      'string.empty': 'The "email" field must be filled in',
-      'string.email': 'the "email" field must be a valid email address',
+      "string.empty": 'The "email" field must be filled in',
+      "string.email": 'the "email" field must be a valid email address',
     }),
     password: Joi.string().required().messages({
-      'string.empty': 'The "password" field must be filled in',
+      "string.empty": 'The "password" field must be filled in',
     }),
   }),
 });
