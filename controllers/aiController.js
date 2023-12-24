@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const fs = require('fs');
+const FormData = require('form-data');
 const { OPENAI_API_KEY } = require('../utils/config');
 const BadRequestError = require('../errors/bad-request-err');
 const { error } = require('winston');
@@ -45,28 +47,31 @@ const aiController = {
 
 // AI SST
 speechToText: (req, res, next) => {
-  console.log(req.files)
+  console.log("this is req.files for STT",req.files)
   if (!req.files || Object.keys(req.files).length === 0) {
 
     return next(new BadRequestError('No files were uploaded.'));
   }
 
-const audioFile = req.files.audio;
+const audioFile = req.files.file;
 if (!audioFile.data) {
   return next(new BadRequestError('File data is undefined'));
 }
-console.log('req.files:', req.files);
-console.log('audioFile:', audioFile);
+console.log('req.files value:', req.files);
+console.log('req.files.file value:', req.files.file);
+console.log('audioFile value:', audioFile);
 
 
 const formData = new FormData();
-formData.append('file', audioFile.data, audioFile.name);
+console.log('formData:', formData);
+formData.append('file', fs.createReadStream(audioFile.tempFilePath));
 formData.append('model', 'whisper-1');
 
 fetch('https://api.openai.com/v1/audio/transcriptions', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${OPENAI_API_KEY}`,
+    ...formData.getHeaders()
   },
   body: formData
 })
