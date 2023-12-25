@@ -151,6 +151,8 @@ const aiController = {
   textToSpeech: (req, res, next) => {
     const text = req.body.text;
 
+    console.log("Received text for TTS:", text);
+
     fetch("https://api.openai.com/v1/audio/speech", {
       method: "POST",
       headers: {
@@ -165,7 +167,9 @@ const aiController = {
       }),
     })
       .then((response) => response.arrayBuffer())
+      // console.log("Received response from OpenAI TTS API:", response)
       .then((buffer) => {
+         console.log("Received audio buffer from OpenAI TTS API:", buffer);
         res.set("Content-Type", "audio/mpeg");
         res.send(Buffer.from(buffer));
       })
