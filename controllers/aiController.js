@@ -59,6 +59,7 @@ const aiController = {
     formData.append("model", "whisper-1");
     formData.append("file", fs.createReadStream(filePath), {
       filename: audioFile.name,
+      contentType: 'audio/wav',
     });
     console.log("formData value:", formData);
     const headers = {
