@@ -19,26 +19,27 @@ const BadRequestError = require("../errors/bad-request-err");
 // ♓ Pisces (Fish): February 19–March 20
 
 function getZodiacSign(dateOfBirth) {
-  const birthDate = new Date(dateOfBirth);
-  const day = birthDate.getDate();
-  const month = birthDate.getMonth() + 1;
 
-  if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return "Aries";
-  if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return "Taurus";
-  if ((month === 5 && day >= 21) || (month === 6 && day <= 21)) return "Gemini";
-  if ((month === 6 && day >= 22) || (month === 7 && day <= 22)) return "Cancer";
-  if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return "Leo";
-  if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return "Virgo";
-  if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return "Libra";
-  if ((month === 10 && day >= 23) || (month === 11 && day <= 21))
-    return "Scorpio";
-  if ((month === 11 && day >= 22) || (month === 12 && day <= 21))
-    return "Sagittarius";
-  if ((month === 12 && day >= 22) || (month === 1 && day <= 19))
-    return "Capricorn";
-  if ((month === 1 && day >= 20) || (month === 2 && day <= 18))
-    return "Aquarius";
-  if ((month === 2 && day >= 19) || (month === 3 && day <= 20)) return "Pisces";
+  if (typeof dateOfBirth !== 'string' || !dateOfBirth.includes('T')) {
+    return "Invalid date/Unknown zodiac sign";
+  }
+
+
+  const dateString = dateOfBirth.split('T')[0];
+  const [year, month, day] = dateOfBirth.split('-').map(num => parseInt(num, 10));
+
+  if ((month === 3 && day >= 21) || (month === 4 && day < 20)) return "Aries";
+  if ((month === 4 && day >= 20) || (month === 5 && day < 21)) return "Taurus";
+  if ((month === 5 && day >= 21) || (month === 6 && day < 21)) return "Gemini";
+  if ((month === 6 && day >= 22) || (month === 7 && day < 23)) return "Cancer";
+  if ((month === 7 && day >= 23) || (month === 8 && day < 23)) return "Leo";
+  if ((month === 8 && day >= 23) || (month === 9 && day < 23)) return "Virgo";
+  if ((month === 9 && day >= 23) || (month === 10 && day < 23)) return "Libra";
+  if ((month === 10 && day >= 23) || (month === 11 && day < 22)) return "Scorpio";
+  if ((month === 11 && day >= 22) || (month === 12 && day < 22)) return "Sagittarius";
+  if ((month === 12 && day >= 22) || (month === 1 && day < 20)) return "Capricorn";
+  if ((month === 1 && day >= 20) || (month === 2 && day < 19)) return "Aquarius";
+  if ((month === 2 && day >= 19) || (month === 3 && day < 21)) return "Pisces";
   return "Invalid date/Unknown zodiac sign";
 }
 
@@ -99,7 +100,8 @@ const aiController = {
 
     User.findById(userId)
       .then((user) => {
-        const zodiacSign = getZodiacSign(user.dob);
+        const zodiacSign = getZodiacSign(user.dob.toISOString());
+
         const prompt = `Welcome! ${user.name}, child of the ${zodiacSign}. ${userInput}`;
 
         return fetch("https://api.openai.com/v1/chat/completions", {
