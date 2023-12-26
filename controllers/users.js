@@ -9,7 +9,12 @@ const NotFoundError = require("../errors/not-found-err");
 const UnauthorizedError = require("../errors/unauthorized-err");
 
 const createUser = (req, res, next) => {
-  const { name, dob, email, password } = req.body;
+  const {
+    name,
+    dob,
+    email,
+    password
+   } = req.body;
 
   if (!email || !password) {
     return next(new BadRequestError("Email and Password are REQUIRED!"));

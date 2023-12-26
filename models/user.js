@@ -13,6 +13,27 @@ const userSchema = new mongoose.Schema({
     type: Date,
     required: [true, "Date of Birth is required"],
   },
+  placeOfBirth: {
+    type: String,
+    default: 'Place of Birth',
+    // required: [true, 'Place of Birth is required'],
+  },
+  maritalStatus: {
+    type: String,
+    // required: [true, 'Marital Status is required'],
+    enum: ['Single', 'In a Relationship', 'Married', 'Divorced', 'Widowed'],
+    default: 'Single',
+  },
+  gender: {
+    type: String,
+    required: false, 
+    enum: [
+      'Male', 'Female', 'Transgender', 'Non-Binary', 'Genderqueer',
+      'Genderfluid', 'Bigender', 'Agender', 'Pangender', 'Neutrois',
+      'Androgyne', 'Demiboy', 'Demigirl', 'Two-Spirit', 'Third Gender',
+      'Other'
+    ],
+  },
   email: {
     type: String,
     unique: true,
