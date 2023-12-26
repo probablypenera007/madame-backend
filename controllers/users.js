@@ -12,6 +12,9 @@ const createUser = (req, res, next) => {
   const {
     name,
     dob,
+    placeOfBirth,
+    maritalStatus = "Single",
+    gender,
     email,
     password
    } = req.body;
@@ -27,11 +30,22 @@ const createUser = (req, res, next) => {
       }
       return bcrypt.hash(password, 10);
     })
-    .then((hash) => Users.create({ name, dob, email, password: hash }))
+    .then((hash) => Users.create({
+      name,
+       dob,
+       placeOfBirth,
+       maritalStatus,
+       gender,
+       email,
+       password: hash
+      }))
     .then((newUser) =>
       res.send({
         name: newUser.name,
         dob: newUser.dob,
+        placeOfBirth: newUser.placeOfBirth,
+        maritalStatus: newUser.maritalStatus,
+        gender: newUser.gender,
         email: newUser.email,
       }),
     )
@@ -54,11 +68,11 @@ const getCurrentUsers = (req, res, next) => {
 };
 
 const updateUser = (req, res, next) => {
-  const { name, dob } = req.body;
+  const { name, dob, placeOfBirth, maritalStatus, gender} = req.body;
 
   Users.findByIdAndUpdate(
     req.user._id,
-    { name, dob },
+    { name, dob, placeOfBirth, maritalStatus, gender },
     { new: true, runValidators: true },
   )
     .then((user) => {
