@@ -6,15 +6,19 @@ const NotFoundError = require('../errors/not-found-err');
 const ForbiddenError = require('../errors/forbidden-err');
 
 const getUserReadings = (req, res, next) => {
-  const userId = req.user._id;
+ const userId = req.user._id;
 
-  oracleReadings.find({ userId })
+ console.log('userId getUser- readingController', userId);
+
+  oracleReadings.find({userId})
     .then(readings => res.send({ data: readings }))
     .catch(next);
 };
 
 const saveReading = (req, res, next) => {
   const { userId, title, text } = req.body;
+
+console.log("req.body readingController: ", req.body)
 
   oracleReadings.create({ userId, title, text })
     .then(reading => res.status(201).send(reading))
@@ -23,6 +27,8 @@ const saveReading = (req, res, next) => {
 
 const deleteReading = (req, res, next) => {
   const { readingId } = req.params;
+
+  console.log("deletereading readingController: ", req.params)
 
   oracleReadings.findByIdAndDelete(readingId)
     .then(reading => {
