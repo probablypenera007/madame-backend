@@ -18,7 +18,7 @@ const getUserReadings = (req, res, next) => {
 const saveReading = (req, res, next) => {
   const { userId, title, text } = req.body;
 
-console.log("req.body readingController: ", req.body)
+console.log("req.body data, readingController: ", req.body)
 
   oracleReadings.create({ userId, title, text })
     .then(reading => res.status(201).send(reading))
