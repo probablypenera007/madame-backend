@@ -19,6 +19,9 @@ const saveReading = (req, res, next) => {
   const { userId, title, text } = req.body;
 
 console.log("req.body data, readingController: ", req.body)
+if (userId !== req.user._id) {
+  return next(new ForbiddenError('You are not authorized to create this reading'));
+}
 
   oracleReadings.create({ userId, title, text })
     .then(reading => res.status(201).send(reading))
@@ -42,11 +45,21 @@ const updateReadingTitle = (req, res, next) => {
   const { readingId } = req.params;
   const { title } = req.body;
 
-  oracleReadings.findByIdAndUpdate(
-    readingId,
-    { title },
-    { new: true, runValidators: true }
-  )
+  if (!mongoose.Types.ObjectId.isValid(readingId)) {
+    return next(new BadRequestError('Invalid reading ID'));
+  }
+
+  oracleReadings.findOne({ _id: readingId, userId: req.user._id })
+    .then(reading => {
+      if (!reading) throw new NotFoundError('Reading not found');
+
+
+      return oracleReadings.findByIdAndUpdate(
+       readingId,
+        { $set: {title} },
+        { new: true, runValidators: true }
+      );
+    })
     .then((reading) => {
       if (!reading) {
         throw new NotFoundError('Reading not found');
