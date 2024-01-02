@@ -106,7 +106,7 @@ const aiController = {
       .then((user) => {
         const zodiacSign = getZodiacSign(user.dob.toISOString());
 
-        const prompt = `Welcome! ${user.name}, child of the ${zodiacSign}. ${userInput, user.dob, user.placeOfBirth, user.maritalStatus, user.sexualOrientation}`;
+        const prompt = `Welcome! ${user.name}, child of the ${zodiacSign}. ${userInput + user.dob + user.placeOfBirth + user.maritalStatus + user.sexualOrientation}`;
 
         return fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",

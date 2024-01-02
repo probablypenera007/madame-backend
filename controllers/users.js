@@ -14,7 +14,7 @@ const createUser = (req, res, next) => {
     dob,
     placeOfBirth,
     maritalStatus = "Single",
-    gender,
+    sexualOrientation,
     email,
     password
    } = req.body;
@@ -35,7 +35,7 @@ const createUser = (req, res, next) => {
        dob,
        placeOfBirth,
        maritalStatus,
-       gender,
+       sexualOrientation,
        email,
        password: hash
       }))
@@ -45,7 +45,7 @@ const createUser = (req, res, next) => {
         dob: newUser.dob,
         placeOfBirth: newUser.placeOfBirth,
         maritalStatus: newUser.maritalStatus,
-        gender: newUser.gender,
+        sexualOrientation: newUser.sexualOrientation,
         email: newUser.email,
       }),
     )
@@ -68,11 +68,11 @@ const getCurrentUsers = (req, res, next) => {
 };
 
 const updateUser = (req, res, next) => {
-  const { name, dob, placeOfBirth, maritalStatus, gender} = req.body;
+  const { name, dob, placeOfBirth, maritalStatus, sexualOrientation} = req.body;
 
   Users.findByIdAndUpdate(
     req.user._id,
-    { name, dob, placeOfBirth, maritalStatus, gender },
+    { name, dob, placeOfBirth, maritalStatus, sexualOrientation },
     { new: true, runValidators: true },
   )
     .then((user) => {
