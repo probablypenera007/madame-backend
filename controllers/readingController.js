@@ -49,17 +49,12 @@ const updateReadingTitle = (req, res, next) => {
     return next(new BadRequestError('Invalid reading ID'));
   }
 
-  oracleReadings.findOne({ _id: readingId, userId: req.user._id })
-    .then(reading => {
-      if (!reading) throw new NotFoundError('Reading not found');
-
-
-      return oracleReadings.findByIdAndUpdate(
-       readingId,
-        { $set: {title} },
-        { new: true, runValidators: true }
-      );
-    })
+  oracleReadings
+    .findOneAndUpdate(
+      { _id: readingId, userId: req.user._id },
+      { title: title }, 
+      { new: true, runValidators: true }
+    )
     .then((reading) => {
       if (!reading) {
         throw new NotFoundError('Reading not found');
@@ -67,8 +62,8 @@ const updateReadingTitle = (req, res, next) => {
       res.send({ data: reading });
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        next(new BadRequestError("Invalid data"));
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Invalid data'));
       } else {
         next(err);
       }
