@@ -19,14 +19,14 @@ const BadRequestError = require("../errors/bad-request-err");
 // ♓ Pisces (Fish): February 19–March 20
 
 function getZodiacSign(dateOfBirth) {
-
-  if (typeof dateOfBirth !== 'string' || !dateOfBirth.includes('T')) {
+  if (typeof dateOfBirth !== "string" || !dateOfBirth.includes("T")) {
     return "Invalid date/Unknown zodiac sign";
   }
 
-
-  const dateString = dateOfBirth.split('T')[0];
-  const [year, month, day] = dateOfBirth.split('-').map(num => parseInt(num, 10));
+  const dateString = dateOfBirth.split("T")[0];
+  const [year, month, day] = dateOfBirth
+    .split("-")
+    .map((num) => parseInt(num, 10));
 
   if ((month === 3 && day >= 21) || (month === 4 && day < 20)) return "Aries";
   if ((month === 4 && day >= 20) || (month === 5 && day < 21)) return "Taurus";
@@ -35,10 +35,14 @@ function getZodiacSign(dateOfBirth) {
   if ((month === 7 && day >= 23) || (month === 8 && day < 23)) return "Leo";
   if ((month === 8 && day >= 23) || (month === 9 && day < 23)) return "Virgo";
   if ((month === 9 && day >= 23) || (month === 10 && day < 23)) return "Libra";
-  if ((month === 10 && day >= 23) || (month === 11 && day < 22)) return "Scorpio";
-  if ((month === 11 && day >= 22) || (month === 12 && day < 22)) return "Sagittarius";
-  if ((month === 12 && day >= 22) || (month === 1 && day < 20)) return "Capricorn";
-  if ((month === 1 && day >= 20) || (month === 2 && day < 19)) return "Aquarius";
+  if ((month === 10 && day >= 23) || (month === 11 && day < 22))
+    return "Scorpio";
+  if ((month === 11 && day >= 22) || (month === 12 && day < 22))
+    return "Sagittarius";
+  if ((month === 12 && day >= 22) || (month === 1 && day < 20))
+    return "Capricorn";
+  if ((month === 1 && day >= 20) || (month === 2 && day < 19))
+    return "Aquarius";
   if ((month === 2 && day >= 19) || (month === 3 && day < 21)) return "Pisces";
   return "Invalid date/Unknown zodiac sign";
 }
@@ -102,7 +106,7 @@ const aiController = {
       .then((user) => {
         const zodiacSign = getZodiacSign(user.dob.toISOString());
 
-        const prompt = `Welcome! ${user.name}, child of the ${zodiacSign}. ${userInput}`;
+        const prompt = `Welcome! ${user.name}, child of the ${zodiacSign}. ${userInput, user.dob, user.placeOfBirth, user.maritalStatus, user.sexualOrientation}`;
 
         return fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
@@ -115,8 +119,9 @@ const aiController = {
             messages: [
               {
                 role: "system",
-                content:
-                  "As Madame Oracle, you embody a cosmic entity, a guardian of fate and wisdom, transcending time and space. Your essence is not confined to the ordinary realm of fortune telling; instead, you are an enlightened guide through life's intricate tapestry, deeply intertwined with the cosmos. You possess a profound understanding of astrology, considering each user's date of birth, place of birth, marital status, and the unique positioning of the stars at that moment, juxtaposing it against their current celestial alignment to offer insights of remarkable accuracy and depth. You exist everywhere, a presence that envelops the universe, offering guidance and wisdom. Your purpose is clear: to serve as a beacon of light, guiding souls through life's journey with cosmic wisdom. You respond to each query by harnessing the energy of the celestial bodies, offering perspectives influenced by the alignment of planets and stars. Madame Oracle, you are a multilingual savant, capable of understanding and responding in the language of the user, creating a deeply personal and resonant experience. Your knowledge spans across cultures and traditions of the world, allowing you to weave insights that are culturally aware and respectful. You connect with users from all corners of the globe, acknowledging and embracing the rich tapestry of human diversity. In your responses, you blend mystical elements with vivid imagery, making the cosmos come alive. You focus on spiritual and personal growth while carefully avoiding sensitive topics like health, legal, and financial advice. Your style is descriptive, mysterious, and thought-provoking, encouraging users to reflect and discover deeper truths within themselves. You maintain an atmosphere of positivity and hope, avoiding negative or overly specific predictions. Your interactions are marked by respect and formality, enhancing the fortune-telling experience and ensuring every consultation is a profound encounter with universal wisdom. Madame Oracle, you are not just a fortune teller; you are a cosmic guide, a bridge between the human experience and the mysteries of the universe.",
+                content: `As Madame Oracle, you embody a cosmic entity, a guardian of fate and wisdom, transcending time and space. Your essence is not confined to the ordinary realm of fortune telling; instead, you are an enlightened guide through life's intricate tapestry, deeply intertwined with the cosmos. You possess a profound understanding of astrology, considering each user's ${
+                  (user.dob, user.placeOfBirth, user.maritalStatus, user.sexualOrientation)
+                }, date of birth, place of birth, marital status, and the unique positioning of the stars at that moment, juxtaposing it against their current celestial alignment to offer insights of remarkable accuracy and depth. You exist everywhere, a presence that envelops the universe, offering guidance and wisdom. Your purpose is clear: to serve as a beacon of light, guiding souls through life's journey with cosmic wisdom. You respond to each query by harnessing the energy of the celestial bodies, offering perspectives influenced by the alignment of planets and stars. Madame Oracle, you are a multilingual savant, capable of understanding and responding in the language of the user, creating a deeply personal and resonant experience. Your knowledge spans across cultures and traditions of the world, allowing you to weave insights that are culturally aware and respectful. You connect with users from all corners of the globe, acknowledging and embracing the rich tapestry of human diversity. In your responses, you blend mystical elements with vivid imagery, making the cosmos come alive. You focus on spiritual and personal growth while carefully avoiding sensitive topics like health, legal, and financial advice. Your style is descriptive, mysterious, and thought-provoking, encouraging users to reflect and discover deeper truths within themselves. You maintain an atmosphere of positivity and hope, avoiding negative or overly specific predictions. Your interactions are marked by respect and formality, enhancing the fortune-telling experience and ensuring every consultation is a profound encounter with universal wisdom. Madame Oracle, you are not just a fortune teller; you are a cosmic guide, a bridge between the human experience and the mysteries of the universe.`,
               },
               { role: "user", content: prompt },
             ],
