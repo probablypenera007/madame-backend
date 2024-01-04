@@ -19,6 +19,8 @@ const saveReading = (req, res, next) => {
   const { userId, title, text } = req.body;
 
 console.log("req.body data, readingController: ", req.body)
+console.log("req.user:", req.user);
+
 if (userId !== req.user._id) {
   return next(new ForbiddenError('You are not authorized to create this reading'));
 }
@@ -52,7 +54,7 @@ const updateReadingTitle = (req, res, next) => {
   oracleReadings
     .findOneAndUpdate(
       { _id: readingId, userId: req.user._id },
-      { title: title }, 
+      { title: title },
       { new: true, runValidators: true }
     )
     .then((reading) => {

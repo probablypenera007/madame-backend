@@ -11,9 +11,9 @@ router.post("/fortune-teller", aiController.fortuneTeller);
 router.post("/text-to-speech", aiController.textToSpeech);
 
 router.get('/readings', auth, getUserReadings)
-router.post('/readings', saveReading);
-router.delete('/readings/:readingId', deleteReading);
-router.patch('/readings/:readingId', updateReadingTitle);
+router.post('/readings',auth, saveReading);
+router.delete('/readings/:readingId', auth, deleteReading);
+router.patch('/readings/:readingId', auth, updateReadingTitle);
 
 
 router.use((req, res, next) => {
