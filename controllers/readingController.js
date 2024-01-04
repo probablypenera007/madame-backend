@@ -25,14 +25,8 @@ if (userId !== req.user._id) {
   return next(new ForbiddenError('You are not authorized to create this reading'));
 }
 
-// implementing error handling for when the user is creating a reading
-// that already exists in the database
-
-// If the reading already exists, return it instead of creating a new one
-
- // If the reading does not exist, create a new one
   oracleReadings.create({ userId, title, text })
-    .then(reading => res.status(201).send(reading))
+    .then(reading => res.send(reading))
     .catch(next);
 };
 
@@ -44,7 +38,7 @@ const deleteReading = (req, res, next) => {
   oracleReadings.findByIdAndDelete(readingId)
     .then(reading => {
       if (!reading) throw new NotFoundError('Reading not found');
-      res.status(200).send({ message: 'Reading deleted' });
+      res.send({ message: 'Reading deleted' });
     })
     .catch(next);
 };
