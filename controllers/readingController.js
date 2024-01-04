@@ -54,7 +54,7 @@ const updateReadingTitle = (req, res, next) => {
   oracleReadings
     .findOneAndUpdate(
       { _id: readingId, userId: req.user._id },
-      { title: title },
+      { title },
       { new: true, runValidators: true }
     )
     .then((reading) => {
@@ -71,6 +71,10 @@ const updateReadingTitle = (req, res, next) => {
       }
     });
 };
+// I suspect you may need to do updateReading.data
+// instead of updateReading on line 131 of the previous screenshot
+// You're probably saving the `{data: {...actual stuff}}`
+// object to the list instead of `{...actual stuff}` to the list
 
 
 module.exports = {
