@@ -19,12 +19,18 @@ const saveReading = (req, res, next) => {
   const { userId, title, text } = req.body;
 
 console.log("req.body data, readingController: ", req.body)
-console.log("req.user:", req.user);
+console.log("req.user readingConmtroller:", req.user);
 
 if (userId !== req.user._id) {
   return next(new ForbiddenError('You are not authorized to create this reading'));
 }
 
+// implementing error handling for when the user is creating a reading
+// that already exists in the database
+
+// If the reading already exists, return it instead of creating a new one
+
+ // If the reading does not exist, create a new one
   oracleReadings.create({ userId, title, text })
     .then(reading => res.status(201).send(reading))
     .catch(next);
@@ -33,7 +39,7 @@ if (userId !== req.user._id) {
 const deleteReading = (req, res, next) => {
   const { readingId } = req.params;
 
-  console.log("deletereading readingController: ", req.params)
+ // console.log("deletereading readingController: ", req.params)
 
   oracleReadings.findByIdAndDelete(readingId)
     .then(reading => {
