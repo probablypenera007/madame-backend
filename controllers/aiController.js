@@ -23,10 +23,11 @@ function getZodiacSign(dateOfBirth) {
     return "Invalid date/Unknown zodiac sign";
   }
 
-  const dateString = dateOfBirth.split("T")[0];
-  const [year, month, day] = dateOfBirth
-    .split("-")
-    .map((num) => parseInt(num, 10));
+  const date = new Date(dateOfBirth);
+
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1;
+  const day = date.getUTCDate();
 
   if ((month === 3 && day >= 21) || (month === 4 && day < 20)) return "Aries";
   if ((month === 4 && day >= 20) || (month === 5 && day < 21)) return "Taurus";
@@ -35,17 +36,14 @@ function getZodiacSign(dateOfBirth) {
   if ((month === 7 && day >= 23) || (month === 8 && day < 23)) return "Leo";
   if ((month === 8 && day >= 23) || (month === 9 && day < 23)) return "Virgo";
   if ((month === 9 && day >= 23) || (month === 10 && day < 23)) return "Libra";
-  if ((month === 10 && day >= 23) || (month === 11 && day < 22))
-    return "Scorpio";
-  if ((month === 11 && day >= 22) || (month === 12 && day < 22))
-    return "Sagittarius";
-  if ((month === 12 && day >= 22) || (month === 1 && day < 20))
-    return "Capricorn";
-  if ((month === 1 && day >= 20) || (month === 2 && day < 19))
-    return "Aquarius";
+  if ((month === 10 && day >= 23) || (month === 11 && day < 22)) return "Scorpio";
+  if ((month === 11 && day >= 22) || (month === 12 && day < 22)) return "Sagittarius";
+  if ((month === 12 && day >= 22) || (month === 1 && day < 20)) return "Capricorn";
+  if ((month === 1 && day >= 20) || (month === 2 && day < 19)) return "Aquarius";
   if ((month === 2 && day >= 19) || (month === 3 && day < 21)) return "Pisces";
   return "Invalid date/Unknown zodiac sign";
 }
+
 
 const aiController = {
   // AI SST
@@ -105,8 +103,9 @@ const aiController = {
     User.findById(userId)
       .then((user) => {
         const zodiacSign = getZodiacSign(user.dob.toISOString());
+        const formattedDOB = user.dob.toISOString().split("T")[0];
 
-        const prompt = `Welcome! ${user.name}, child of the ${zodiacSign}. ${userInput + user.dob + user.placeOfBirth + user.maritalStatus + user.sexualOrientation}`;
+        const prompt = `Welcome! ${user.name}, child of the ${zodiacSign}. ${userInput + formattedDOB + user.placeOfBirth + user.maritalStatus + user.sexualOrientation}`;
 
         return fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
