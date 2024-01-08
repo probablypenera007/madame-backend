@@ -1,5 +1,8 @@
 # Madame Oracle: Back End
-Welcome to the back-end of the WTWR application, a robust server designed to support our innovative "What to Wear?" service. This project gives you an inside look at advanced server setup, database management, security implementation and applicaiton deployment.
+Welcome to the back-end of the Madame Oracle application, a robust server designed to support our innovative service. This project provides a detailed look into advanced server setup, database management, security implementation, and application deployment.
+
+# LINK FOR THE FRONT-END:
+[Madame Oracle Front End Repository](https://github.com/probablypenera007/madame-frontend)
 
 ## Functionality
 1. **API Endpoints:** Various CRUD (Create, Read. Update, Delete) operations for interacting with user data.
@@ -15,7 +18,7 @@ Welcome to the back-end of the WTWR application, a robust server designed to sup
 
 3. **Postman:** A tool used for testing API endpoints to ensure they behave as expected.
 
-4. **GCP (Google Cloud Platform):** For powerful and scalable cloud hosting.
+4. **AWS (Amazon Web Services):** For powerful and scalable cloud hosting.
 
 5. **Security and Authorization:**
   - **JWT (JSON Web Tokens):** Implementing JWT for secure user authentication and to maintain session integrity.
@@ -25,10 +28,17 @@ Welcome to the back-end of the WTWR application, a robust server designed to sup
 
 6. **Winston Logging:** Efficient error tracking and application monitoring.
 
+7. **AI Model Integration:** Incorporates an advanced AI model for enhanced user interaction.
+
+8. **Text-to-Speech(TTS) & Speech-to-Text(STT):** Implements TTS and STT technologies for seamless voice-enabled functionalities.
+
+For deployment, the application is hosted on AWS, and you can experience the intuitive and engaging interface of the Madame Oracle Front End by visiting [www.mdmoracle.com](https://mdmoracle.com)
 
 ## Running the Project
 `npm run start` — to launch the server 
 
 `npm run dev` — to launch the server with the hot reload feature
 
-Seamless functionality and fortified security of our latest back-end update!
+The Madame Oracle Back-End complements the Front-End, forming part of a MERN stack project that integrates AI, speech-to-text, an AI model, and text-to-speech playback. Designed for an intuitive and engaging user experience, the front-end features a sleek user interface, interactive elements, React for UI building, and React Router for navigation, along with a unique microphone interaction system for communicating with the Madame Oracle AI model.
+
+For any inquiries or feedback, feel free to reach out. Thank you for exploring the Madame Oracle project!
