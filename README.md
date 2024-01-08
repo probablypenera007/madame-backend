@@ -4,6 +4,9 @@ Welcome to the back-end of the Madame Oracle application, a robust server design
 # LINK FOR THE FRONT-END:
 [Madame Oracle Front End Repository](https://github.com/probablypenera007/madame-frontend)
 
+# DEPLOYED APP:
+For deployment, the application is hosted on AWS, and you can experience the intuitive and engaging interface of the Madame Oracle Front End by visiting [www.mdmoracle.com](https://mdmoracle.com)
+
 ## Functionality
 1. **API Endpoints:** Various CRUD (Create, Read. Update, Delete) operations for interacting with user data.
 
@@ -32,7 +35,7 @@ Welcome to the back-end of the Madame Oracle application, a robust server design
 
 8. **Text-to-Speech(TTS) & Speech-to-Text(STT):** Implements TTS and STT technologies for seamless voice-enabled functionalities.
 
-For deployment, the application is hosted on AWS, and you can experience the intuitive and engaging interface of the Madame Oracle Front End by visiting [www.mdmoracle.com](https://mdmoracle.com)
+
 
 ## Running the Project
 `npm run start` — to launch the server 
