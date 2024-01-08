@@ -16,7 +16,6 @@ const userSchema = new mongoose.Schema({
   placeOfBirth: {
     type: String,
     default: "Place of Birth",
-    // required: [true, 'Place of Birth is required'],
   },
   maritalStatus: {
     type: String,
