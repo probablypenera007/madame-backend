@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const oracleReadings = require('../models/reading');
 
-const BadRequestError = require('../errors/bad-request-err');
+const BadRequestError = require('../errors/bad-request-err').default;
 const NotFoundError = require('../errors/not-found-err');
 const ForbiddenError = require('../errors/forbidden-err');
 
 const getUserReadings = (req, res, next) => {
  const userId = req.user._id;
 
- console.log('userId getUser- readingController', userId);
+//  console.log('userId getUser- readingController', userId);
 
   oracleReadings.find({userId})
     .then(readings => res.send({ data: readings }))
@@ -19,14 +19,14 @@ const saveReading = (req, res, next) => {
   const { title, text } = req.body;
   const userId = req.user._id;
 
-console.log("req.body data, readingController: ", req.body)
-console.log("req.user readingConmtroller:", req.user);
+// console.log("req.body data, readingController: ", req.body)
+// console.log("req.user readingConmtroller:", req.user);
 
 if (userId !== req.user._id) {
   return next(new ForbiddenError('You are not authorized to create this reading'));
 }
 
-  oracleReadings.create({ userId, title, text })
+  return oracleReadings.create({ userId, title, text })
     .then(reading => res.send(reading))
     .catch(next);
 };
@@ -35,9 +35,9 @@ const deleteReading = (req, res, next) => {
   const { readingId } = req.params;
   const userId = req.user._id;
 
-  console.log("deletereading readingController: ", req.params);
+  // console.log("deletereading readingController: ", req.params);
 
-  oracleReadings
+ return oracleReadings
     .findOne({ _id: readingId, userId })
     .then((reading) => {
       if (!reading) {
@@ -60,7 +60,7 @@ const updateReadingTitle = (req, res, next) => {
     return next(new BadRequestError('Invalid reading ID'));
   }
 
-  oracleReadings
+ return oracleReadings
     .findOneAndUpdate(
       { _id: readingId, userId: req.user._id },
       { title },

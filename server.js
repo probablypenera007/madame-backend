@@ -23,14 +23,15 @@ app.use(
   }),
 );
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/oracle_db";
-mongoose.set('strictQuery', false);
-mongoose.connect(MONGODB_URI).then(
-  () => {
-    console.log(`DB is connected to "${MONGODB_URI}"`);
-  },
-  (e) => console.log("DB ERROR", e),
-);
+const { MONGODB_URI } = process.env;
+mongoose.set("strictQuery", false);
+mongoose.connect(MONGODB_URI)
+// .then(
+//   () => {
+//     console.log(`DB is connected to "${MONGODB_URI}"`);
+//   },
+//   (e) => console.log("DB ERROR", e),
+// );
 
 app.use(cors());
 app.use(express.json());
@@ -46,6 +47,7 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT);
+//   , () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });

@@ -1,8 +1,8 @@
-const User = require("../models/user");
 const fs = require("fs");
 const FormData = require("form-data");
+const User = require("../models/user");
 const { OPENAI_API_KEY } = require("../utils/config");
-const BadRequestError = require("../errors/bad-request-err");
+const BadRequestError = require("../errors/bad-request-err").default;
 
 // put Zodiac sign calculation per user's dateo of birth here
 // ♈ Aries (Ram): March 21–April 19
@@ -25,7 +25,7 @@ function getZodiacSign(dateOfBirth) {
 
   const date = new Date(dateOfBirth);
 
-  const year = date.getUTCFullYear();
+  // const year = date.getUTCFullYear();
   const month = date.getUTCMonth() + 1;
   const day = date.getUTCDate();
 
@@ -48,12 +48,12 @@ function getZodiacSign(dateOfBirth) {
 const aiController = {
   // AI SST
   speechToText: (req, res, next) => {
-    console.log("this is req.files for STT", req.files);
+    // console.log("this is req.files for STT", req.files);
     if (!req.files || Object.keys(req.files).length === 0) {
       return next(new BadRequestError("No files were uploaded."));
     }
-    console.log("req.files value:", req.files);
-    console.log("req.files.file value:", req.files.file);
+    // console.log("req.files value:", req.files);
+    // console.log("req.files.file value:", req.files.file);
 
     const audioFile = req.files.file;
     const filePath = audioFile.tempFilePath;
@@ -64,12 +64,12 @@ const aiController = {
       filename: audioFile.name,
       contentType: "audio/wav",
     });
-    console.log("formData value:", formData);
+    // console.log("formData value:", formData);
     const headers = {
       Authorization: `Bearer ${OPENAI_API_KEY}`,
       ...formData.getHeaders(),
     };
-    import("node-fetch").then((fetchModule) => {
+    return import("node-fetch").then((fetchModule) => {
       const fetch = fetchModule.default;
       return fetch("https://api.openai.com/v1/audio/transcriptions", {
         method: "POST",
@@ -78,21 +78,19 @@ const aiController = {
       })
         .then((response) => response.json())
         .then((data) => {
-          //console.log('OpenAI API response STT data:', data);
+          // console.log('OpenAI API response STT data:', data);
           if (data.text) {
-            res.json({ transcript: data.text });
-            console.log("OpenAI API response STT data.text:", data.text);
+           res.json({ transcript: data.text });
+            // console.log("OpenAI API response STT data.text:", data.text);
           } else {
-            console.error("Invalid response format:", data);
-            next(new BadRequestError("Invalid response format, AI Controller"));
+            // console.error("Invalid response format:", data);
+           next(new BadRequestError("Invalid response format, AI Controller"));
           }
         })
         .catch((error) => {
-          console.error("Error in AI controller speech-to-text:", error);
+          // console.error("Error in AI controller speech-to-text:", error);
           next(error);
         });
-      console.log("Request Headers:", headers);
-      console.log("FormData:", formData);
     });
   },
 
@@ -130,34 +128,36 @@ const aiController = {
       .then((response) => {
         if (response.ok) {
           return response.json();
-        } else {
-          console.error(
-            "Response error from OpenAI API:",
-            response.status,
-            response.statusText,
-          );
-          return response.text().then((text) => Promise.reject(text));
         }
+        // else {
+          // console.error(
+          //   "Response error from OpenAI API:",
+          //   response.status,
+          //   response.statusText,
+          // );
+          return response.text().then((text) => Promise.reject(text));
+        // }
       })
       .then((data) => {
-        console.log("OpenAI API response:", data);
+        // console.log("OpenAI API response:", data);
         if (data.choices && data.choices.length > 0) {
           res.json({ reply: data.choices[0].message.content });
-          console.log("OpenAI API response:", data.choices[0].message.content);
+          // console.log("OpenAI API response:", data.choices[0].message.content);
         } else {
-          console.error("Invalid response format:", data);
+          // console.error("Invalid response format:", data);
         }
       })
       .catch((error) => {
-        console.error("Error in Madame Oracle Model:", error);
+        // console.error("Error in Madame Oracle Model:", error);
         next(error);
       });
   },
   // AI-TTS voice will be Shimmer or Alloy
   textToSpeech: (req, res, next) => {
-    const text = req.body.text;
+    const{text} = req.body
+    // .text;
 
-    console.log("Received text for TTS:", text);
+    // console.log("Received text for TTS:", text);
 
     fetch("https://api.openai.com/v1/audio/speech", {
       method: "POST",
@@ -169,18 +169,18 @@ const aiController = {
         model: "tts-1",
         input: text,
         voice: "alloy",
-        //voice: "shimmer"
+        // voice: "shimmer"
       }),
     })
       .then((response) => response.arrayBuffer())
       // console.log("Received response from OpenAI TTS API:", response)
       .then((buffer) => {
-        console.log("Received audio buffer from OpenAI TTS API:", buffer);
+        // console.log("Received audio buffer from OpenAI TTS API:", buffer);
         res.set("Content-Type", "audio/mpeg");
         res.send(Buffer.from(buffer));
       })
       .catch((error) => {
-        console.error("Error in AI controller text-to-speech:", error);
+        // console.error("Error in AI controller text-to-speech:", error);
         next(error);
       });
   },
