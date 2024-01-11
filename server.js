@@ -10,9 +10,9 @@ const { validateUserBody, validateLogIn } = require("./middlewares/validation");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const { login, createUser } = require("./controllers/users");
 const errorHandler = require("./middlewares/error-handler");
+const { PORT = 3001 , MONGODB_URI} = require("./utils/config");
 
-
-const { PORT = 3001 } = process.env;
+// const { PORT = 3001 } = process.env;
 const app = express();
 app.use(helmet());
 
@@ -24,7 +24,7 @@ app.use(
   }),
 );
 
-const { MONGODB_URI } = process.env;
+// const { MONGODB_URI } = process.env;
 mongoose.set("strictQuery", false);
 mongoose.connect(MONGODB_URI)
 // .then(
