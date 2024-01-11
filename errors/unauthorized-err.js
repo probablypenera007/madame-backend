@@ -1,6 +1,8 @@
+const errorMessages = require("../utils/errorMessages");
+
 class UnauthorizedError extends Error {
-  constructor(message) {
-    super(message);
+  constructor() {
+    super(errorMessages.Unauthorized);
     this.statusCode = 401;
   }
 }

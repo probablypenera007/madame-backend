@@ -8,7 +8,7 @@ const ForbiddenError = require('../errors/forbidden-err');
 const getUserReadings = (req, res, next) => {
  const userId = req.user._id;
 
- console.log('userId getUser- readingController', userId);
+//  console.log('userId getUser- readingController', userId);
 
   oracleReadings.find({userId})
     .then(readings => res.send({ data: readings }))
@@ -16,29 +16,38 @@ const getUserReadings = (req, res, next) => {
 };
 
 const saveReading = (req, res, next) => {
-  const { userId, title, text } = req.body;
+  const { title, text } = req.body;
+  const userId = req.user._id;
 
-console.log("req.body data, readingController: ", req.body)
-console.log("req.user readingConmtroller:", req.user);
+// console.log("req.body data, readingController: ", req.body)
+// console.log("req.user readingConmtroller:", req.user);
 
 if (userId !== req.user._id) {
   return next(new ForbiddenError('You are not authorized to create this reading'));
 }
 
-  oracleReadings.create({ userId, title, text })
+  return oracleReadings.create({ userId, title, text })
     .then(reading => res.send(reading))
     .catch(next);
 };
 
 const deleteReading = (req, res, next) => {
   const { readingId } = req.params;
+  const userId = req.user._id;
 
- // console.log("deletereading readingController: ", req.params)
+  // console.log("deletereading readingController: ", req.params);
 
-  oracleReadings.findByIdAndDelete(readingId)
-    .then(reading => {
-      if (!reading) throw new NotFoundError('Reading not found');
-      res.send({ message: 'Reading deleted' });
+ return oracleReadings
+    .findOne({ _id: readingId, userId })
+    .then((reading) => {
+      if (!reading) {
+        throw new NotFoundError("Reading not found or not authorized to delete");
+      }
+      return oracleReadings.findByIdAndDelete(readingId);
+    })
+    .then((reading) => {
+      if (!reading) throw new NotFoundError("Reading not found");
+      res.send({ message: "Reading deleted" });
     })
     .catch(next);
 };
@@ -51,7 +60,7 @@ const updateReadingTitle = (req, res, next) => {
     return next(new BadRequestError('Invalid reading ID'));
   }
 
-  oracleReadings
+ return oracleReadings
     .findOneAndUpdate(
       { _id: readingId, userId: req.user._id },
       { title },

@@ -1,6 +1,8 @@
+const errorMessages = require("../utils/errorMessages");
+
 class ConflictError extends Error {
-  constructor(message) {
-    super(message);
+  constructor() {
+    super(errorMessages.Conflict);
     this.statusCode = 409;
   }
 }
