@@ -16,7 +16,8 @@ const getUserReadings = (req, res, next) => {
 };
 
 const saveReading = (req, res, next) => {
-  const { userId, title, text } = req.body;
+  const { title, text } = req.body;
+  const userId = req.user._id;
 
 console.log("req.body data, readingController: ", req.body)
 console.log("req.user readingConmtroller:", req.user);
@@ -32,13 +33,21 @@ if (userId !== req.user._id) {
 
 const deleteReading = (req, res, next) => {
   const { readingId } = req.params;
+  const userId = req.user._id;
 
- // console.log("deletereading readingController: ", req.params)
+  console.log("deletereading readingController: ", req.params);
 
-  oracleReadings.findByIdAndDelete(readingId)
-    .then(reading => {
-      if (!reading) throw new NotFoundError('Reading not found');
-      res.send({ message: 'Reading deleted' });
+  oracleReadings
+    .findOne({ _id: readingId, userId })
+    .then((reading) => {
+      if (!reading) {
+        throw new NotFoundError("Reading not found or not authorized to delete");
+      }
+      return oracleReadings.findByIdAndDelete(readingId);
+    })
+    .then((reading) => {
+      if (!reading) throw new NotFoundError("Reading not found");
+      res.send({ message: "Reading deleted" });
     })
     .catch(next);
 };

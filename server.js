@@ -4,8 +4,8 @@ const helmet = require("helmet");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
-const routes = require("./routes");
 const { errors } = require("celebrate");
+const routes = require("./routes");
 const { validateUserBody, validateLogIn } = require("./middlewares/validation");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const { login, createUser } = require("./controllers/users");
@@ -38,15 +38,12 @@ app.use(express.json());
 app.use(requestLogger);
 
 app.post("/signin", validateLogIn, login);
-
 app.post("/signup", validateUserBody, createUser);
 
 app.use(routes);
 
 app.use(errorLogger);
-
 app.use(errors());
-
 app.use(errorHandler);
 
 app.listen(PORT, () => {
