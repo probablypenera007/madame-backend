@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const oracleReadings = require('../models/reading');
 
-const BadRequestError = require('../errors/bad-request-err').default;
+const BadRequestError = require('../errors/bad-request-err');
 const NotFoundError = require('../errors/not-found-err');
 const ForbiddenError = require('../errors/forbidden-err');
 

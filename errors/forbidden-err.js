@@ -2,7 +2,7 @@ const errorMessages = require("../utils/errorMessages");
 
 class ForbiddenError extends Error {
   constructor() {
-    super(errorMessages.ForbiddenMessag);
+    super(errorMessages.Forbidden);
     this.statusCode = 403;
   }
 }

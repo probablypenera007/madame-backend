@@ -2,7 +2,7 @@ const fs = require("fs");
 const FormData = require("form-data");
 const User = require("../models/user");
 const { OPENAI_API_KEY } = require("../utils/config");
-const BadRequestError = require("../errors/bad-request-err").default;
+const BadRequestError = require("../errors/bad-request-err");
 
 // put Zodiac sign calculation per user's dateo of birth here
 // ♈ Aries (Ram): March 21–April 19
