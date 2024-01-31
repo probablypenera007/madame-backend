@@ -27,12 +27,12 @@ app.use(
 // const { MONGODB_URI } = process.env;
 mongoose.set("strictQuery", false);
 mongoose.connect(MONGODB_URI)
-// .then(
-//   () => {
-//     console.log(`DB is connected to "${MONGODB_URI}"`);
-//   },
-//   (e) => console.log("DB ERROR", e),
-// );
+.then(
+  () => {
+    console.log(`DB is connected to "${MONGODB_URI}"`);
+  },
+  (e) => console.log("DB ERROR", e),
+);
 
 app.use(cors());
 app.use(express.json());
