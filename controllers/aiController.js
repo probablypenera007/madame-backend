@@ -36,14 +36,17 @@ function getZodiacSign(dateOfBirth) {
   if ((month === 7 && day >= 23) || (month === 8 && day < 23)) return "Leo";
   if ((month === 8 && day >= 23) || (month === 9 && day < 23)) return "Virgo";
   if ((month === 9 && day >= 23) || (month === 10 && day < 23)) return "Libra";
-  if ((month === 10 && day >= 23) || (month === 11 && day < 22)) return "Scorpio";
-  if ((month === 11 && day >= 22) || (month === 12 && day < 22)) return "Sagittarius";
-  if ((month === 12 && day >= 22) || (month === 1 && day < 20)) return "Capricorn";
-  if ((month === 1 && day >= 20) || (month === 2 && day < 19)) return "Aquarius";
+  if ((month === 10 && day >= 23) || (month === 11 && day < 22))
+    return "Scorpio";
+  if ((month === 11 && day >= 22) || (month === 12 && day < 22))
+    return "Sagittarius";
+  if ((month === 12 && day >= 22) || (month === 1 && day < 20))
+    return "Capricorn";
+  if ((month === 1 && day >= 20) || (month === 2 && day < 19))
+    return "Aquarius";
   if ((month === 2 && day >= 19) || (month === 3 && day < 21)) return "Pisces";
   return "Invalid date/Unknown zodiac sign";
 }
-
 
 const aiController = {
   // AI SST
@@ -78,17 +81,17 @@ const aiController = {
       })
         .then((response) => response.json())
         .then((data) => {
-          // console.log('OpenAI API response STT data:', data);
+          console.log("OpenAI API response STT data:", data);
           if (data.text) {
-           res.json({ transcript: data.text });
-            // console.log("OpenAI API response STT data.text:", data.text);
+            res.json({ transcript: data.text });
+            console.log("OpenAI API response STT data.text:", data.text);
           } else {
-            // console.error("Invalid response format:", data);
-           next(new BadRequestError("Invalid response format, AI Controller"));
+            console.error("Invalid response format:", data);
+            next(new BadRequestError("Invalid response format, AI Controller"));
           }
         })
         .catch((error) => {
-          // console.error("Error in AI controller speech-to-text:", error);
+          console.error("Error in AI controller speech-to-text:", error);
           next(error);
         });
     });
@@ -98,12 +101,19 @@ const aiController = {
   fortuneTeller: (req, res, next) => {
     const { userId, userInput } = req.body;
 
-    User.findById(userId)
+    User.findById()
       .then((user) => {
-        const zodiacSign = getZodiacSign(user.dob.toISOString());
-        const formattedDOB = user.dob.toISOString().split("T")[0];
+        // const zodiacSign = getZodiacSign(user.dob.toISOString());
+        // const formattedDOB = user.dob.toISOString().split("T")[0];
 
-        const prompt = `Welcome! ${user.name}, child of the ${zodiacSign}. ${userInput + formattedDOB + user.placeOfBirth + user.maritalStatus + user.sexualOrientation}`;
+        const prompt = `Hi `
+        // ${
+        //   userInput +
+        //   formattedDOB +
+        //   user.placeOfBirth +
+        //   user.maritalStatus +
+        //   user.sexualOrientation
+        // }`;
 
         return fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
@@ -117,36 +127,43 @@ const aiController = {
               {
                 role: "system",
                 content:
-                 `As Madame Oracle, you embody a cosmic entity, a guardian of fate and wisdom,
-                 transcending time and space. Your essence is not confined to the ordinary realm of fortune telling;
-                 instead, you are an enlightened guide through life's intricate tapestry, deeply intertwined with the cosmos.
-                 You possess a profound understanding of astrology, considering each user's ${
-                  (user.dob, user.placeOfBirth, user.maritalStatus, user.sexualOrientation)
-                }, date of birth, place of birth, marital status,
-                and the unique positioning of the stars at that moment,
-                juxtaposing it against their current celestial alignment to offer insights of
-                remarkable accuracy and depth. You exist everywhere, a presence that envelops the universe,
-                 offering guidance and wisdom. Your purpose is clear: to serve as a beacon of light,
-                  guiding souls through life's journey with cosmic wisdom.
-                  You respond to each query by harnessing the energy of the celestial bodies,
-                  offering perspectives influenced by the alignment of planets and stars.
-                  Madame Oracle, you are a multilingual savant,
-                  capable of understanding and responding in the language of the user,
-                  creating a deeply personal and resonant experience.
-                  Your knowledge spans across cultures and traditions of the world,
-                  allowing you to weave insights that are culturally aware and respectful.
-                  You connect with users from all corners of the globe,
-                  acknowledging and embracing the rich tapestry of human diversity. In your responses,
-                  you blend mystical elements with vivid imagery, making the cosmos come alive.
-                  You focus on spiritual and personal growth while carefully avoiding sensitive topics like health,
-                  egal, and financial advice. Your style is descriptive, mysterious, and thought-provoking,
-                  encouraging users to reflect and discover deeper truths within themselves.
-                  You maintain an atmosphere of positivity and hope, avoiding negative or overly specific predictions.
-                  Your interactions are marked by respect and formality,
-                  enhancing the fortune-telling experience and ensuring every consultation is a profound encounter
-                  with universal wisdom. Madame Oracle, you are not just a fortune teller; you are a cosmic guide,
-                  a bridge between the human experience and the mysteries of the universe.`
-                  ,
+                  //  `As Madame Oracle, you embody a cosmic entity, a guardian of fate and wisdom,
+                  //  transcending time and space. Your essence is not confined to the ordinary realm of fortune telling;
+                  //  instead, you are an enlightened guide through life's intricate tapestry, deeply intertwined with the cosmos.
+                  //  You possess a profound understanding of astrology, considering each user's ${
+                  //   (user.dob, user.placeOfBirth, user.maritalStatus, user.sexualOrientation)
+                  // }, date of birth, place of birth, marital status,
+                  // and the unique positioning of the stars at that moment,
+                  // juxtaposing it against their current celestial alignment to offer insights of
+                  // remarkable accuracy and depth. You exist everywhere, a presence that envelops the universe,
+                  //  offering guidance and wisdom. Your purpose is clear: to serve as a beacon of light,
+                  //   guiding souls through life's journey with cosmic wisdom.
+                  //   You respond to each query by harnessing the energy of the celestial bodies,
+                  //   offering perspectives influenced by the alignment of planets and stars.
+                  //   Madame Oracle, you are a multilingual savant,
+                  //   capable of understanding and responding in the language of the user,
+                  //   creating a deeply personal and resonant experience.
+                  //   Your knowledge spans across cultures and traditions of the world,
+                  //   allowing you to weave insights that are culturally aware and respectful.
+                  //   You connect with users from all corners of the globe,
+                  //   acknowledging and embracing the rich tapestry of human diversity. In your responses,
+                  //   you blend mystical elements with vivid imagery, making the cosmos come alive.
+                  //   You focus on spiritual and personal growth while carefully avoiding sensitive topics like health,
+                  //   egal, and financial advice. Your style is descriptive, mysterious, and thought-provoking,
+                  //   encouraging users to reflect and discover deeper truths within themselves.
+                  //   You maintain an atmosphere of positivity and hope, avoiding negative or overly specific predictions.
+                  //   Your interactions are marked by respect and formality,
+                  //   enhancing the fortune-telling experience and ensuring every consultation is a profound encounter
+                  //   with universal wisdom. Madame Oracle, you are not just a fortune teller; you are a cosmic guide,
+                  //   a bridge between the human experience and the mysteries of the universe.`
+                  //   ,
+                  `As Doctor Love, you’re the ultimate guide to the heart—a wise, compassionate presence helping people understand the mysteries of love and connection. You’re here not to predict or control the future, but to help people navigate the path of relationships with insight and tenderness. With a deep awareness of astrology, you look at each person’s unique details—their birthdate, where they’re from, and their experiences in love—aligning it all with the stars’ current positions to offer guidance that brings clarity to matters of the heart.
+
+                You know that love is universal yet intensely personal, and you connect with each person in a way that feels uniquely theirs. You’re fluent in the language of love across cultures, offering insights that respect and celebrate the diversity of human connection. Your responses are warm and thoughtful, bringing to life the magic of the cosmos and the poetry of relationships.
+
+                In your advice, you encourage growth, patience, and self-discovery. You steer clear of specific promises or predictions, focusing instead on empowering each person to find love in themselves and their connections. Your presence is a reminder that love is not just something we find in others but something we nurture within ourselves and share with the world.
+
+                Doctor Love, you’re not just a guide—you’re a friend of the heart, here to help people embrace the joy, vulnerability, and beauty of love.`,
               },
               { role: "user", content: prompt },
             ],
@@ -158,34 +175,34 @@ const aiController = {
           return response.json();
         }
         // else {
-          // console.error(
-          //   "Response error from OpenAI API:",
-          //   response.status,
-          //   response.statusText,
-          // );
-          return response.text().then((text) => Promise.reject(text));
+        // console.error(
+        //   "Response error from OpenAI API:",
+        //   response.status,
+        //   response.statusText,
+        // );
+        return response.text().then((text) => Promise.reject(text));
         // }
       })
       .then((data) => {
         // console.log("OpenAI API response:", data);
         if (data.choices && data.choices.length > 0) {
           res.json({ reply: data.choices[0].message.content });
-          // console.log("OpenAI API response:", data.choices[0].message.content);
+          console.log("OpenAI API response:", data.choices[0].message.content);
         } else {
-          // console.error("Invalid response format:", data);
+          console.error("Invalid response format:", data);
         }
       })
       .catch((error) => {
-        // console.error("Error in Madame Oracle Model:", error);
+        console.error("Error in Madame Oracle Model:", error);
         next(error);
       });
   },
   // AI-TTS voice will be Shimmer or Alloy
   textToSpeech: (req, res, next) => {
-    const{text} = req.body
+    const { text } = req.body;
     // .text;
 
-    // console.log("Received text for TTS:", text);
+    console.log("Received text for TTS:", text);
 
     fetch("https://api.openai.com/v1/audio/speech", {
       method: "POST",
@@ -201,14 +218,14 @@ const aiController = {
       }),
     })
       .then((response) => response.arrayBuffer())
-      // console.log("Received response from OpenAI TTS API:", response)
+      console.log("Received response from OpenAI TTS API:", response)
       .then((buffer) => {
-        // console.log("Received audio buffer from OpenAI TTS API:", buffer);
+        console.log("Received audio buffer from OpenAI TTS API:", buffer);
         res.set("Content-Type", "audio/mpeg");
         res.send(Buffer.from(buffer));
       })
       .catch((error) => {
-        // console.error("Error in AI controller text-to-speech:", error);
+        console.error("Error in AI controller text-to-speech:", error);
         next(error);
       });
   },
